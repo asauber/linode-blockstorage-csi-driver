@@ -1,5 +1,5 @@
 kind: DaemonSet
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: csi-linode-node
   namespace: kube-system
@@ -39,7 +39,7 @@ spec:
               mountPath: /csi/
             - name: registration-dir
               mountPath: /registration/
-        - name: csi-linode-plugin 
+        - name: csi-linode-plugin
           image: linode/linode-blockstorage-csi-driver:{{ .Values.image.tag }}
           args :
             - "--endpoint=$(CSI_ENDPOINT)"

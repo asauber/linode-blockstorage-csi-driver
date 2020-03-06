@@ -50,15 +50,12 @@ spec:
             - "--token=$(LINODE_TOKEN)"
             - "--url=$(LINODE_API_URL)"
             - "--node=$(NODE_NAME)"
-            - "--bs-prefix=$(LINODE_BS_PREFIX)"
             - "--v=10"
           env:
             - name: CSI_ENDPOINT
               value: unix:///var/lib/csi/sockets/pluginproxy/csi.sock
             - name: LINODE_API_URL
               value: https://api.linode.com/v4
-            - name: LINODE_BS_PREFIX
-              value:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:

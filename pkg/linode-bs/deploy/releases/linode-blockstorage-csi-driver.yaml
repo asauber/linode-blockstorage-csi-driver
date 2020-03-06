@@ -88,6 +88,7 @@ spec:
               description: Indicates this CSI volume driver requires additional pod
                 information (like podName, podUID, etc.) during mount operations.
               type: string
+
 ---
 # pkg/linode-bs/deploy/kubernetes/03-accounts-roles-bindings.yaml
 ##### Node Service Account, Roles, RoleBindings
@@ -96,9 +97,7 @@ kind: ServiceAccount
 metadata:
   name: csi-node-sa
   namespace: kube-system
-
 ---
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -108,10 +107,7 @@ rules:
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
-
-
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -125,7 +121,6 @@ roleRef:
   kind: ClusterRole
   name: driver-registrar-role
   apiGroup: rbac.authorization.k8s.io
-
 ---
 ##### Controller Service Account, Roles, Rolebindings
 apiVersion: v1
@@ -133,7 +128,6 @@ kind: ServiceAccount
 metadata:
   name: csi-controller-sa
   namespace: kube-system
-
 ---
 # xref: https://github.com/kubernetes-csi/external-provisioner/blob/master/deploy/kubernetes/rbac.yaml
 kind: ClusterRole
@@ -163,9 +157,7 @@ rules:
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotcontents"]
     verbs: ["get", "list"]
-
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -179,7 +171,6 @@ roleRef:
   kind: ClusterRole
   name: external-provisioner-role
   apiGroup: rbac.authorization.k8s.io
-
 ---
 # xref: https://github.com/kubernetes-csi/external-attacher/blob/master/deploy/kubernetes/rbac.yaml
 kind: ClusterRole
@@ -200,9 +191,7 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments"]
     verbs: ["get", "list", "watch", "update"]
-
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -216,7 +205,6 @@ roleRef:
   kind: ClusterRole
   name: external-attacher-role
   apiGroup: rbac.authorization.k8s.io
-
 ---
 # xref: https://github.com/kubernetes-csi/external-snapshotter/blob/master/deploy/kubernetes/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -246,9 +234,7 @@ rules:
 - apiGroups: ["admissionregistration.k8s.io"]
   resources: ["mutatingwebhookconfigurations"]
   verbs: ["create"]
-
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -265,7 +251,6 @@ roleRef:
 
 ---
 # pkg/linode-bs/deploy/kubernetes/04-csi-driver-instance.yaml
-
 apiVersion: csi.storage.k8s.io/v1alpha1
 kind: CSIDriver
 metadata:
@@ -347,15 +332,12 @@ spec:
             - "--token=$(LINODE_TOKEN)"
             - "--url=$(LINODE_API_URL)"
             - "--node=$(NODE_NAME)"
-            - "--bs-prefix=$(LINODE_BS_PREFIX)"
             - "--v=10"
           env:
             - name: CSI_ENDPOINT
               value: unix:///var/lib/csi/sockets/pluginproxy/csi.sock
             - name: LINODE_API_URL
               value: https://api.linode.com/v4
-            - name: LINODE_BS_PREFIX
-              value:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
@@ -376,7 +358,7 @@ spec:
 ---
 # pkg/linode-bs/deploy/kubernetes/07-ds-csi-linode-node.yaml
 kind: DaemonSet
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: csi-linode-node
   namespace: kube-system
